@@ -1,5 +1,8 @@
 StockViz
 ========
+#API samples
+This is a collection of samples to get you started on using the (StockViz API)[http://stockviz.biz/index.php/api/] on (Mashape)[https://www.mashape.com/drona/stockviz]
+
 #Intalling python and git
 download python 2.7.6 from (here)[http://www.python.org/download/releases/2.7.6/]
 on windows, set your PATH environment variable to include: C:\Python27\;C:\Python27\Scripts\;
