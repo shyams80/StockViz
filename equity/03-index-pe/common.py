@@ -6,6 +6,19 @@ mashape_auth = "YOUR_MASHAPE_API_KEY"
 unirest.timeout(10)
 
 # function to place a trade in your StockViz account
+def getIndices():
+	#get the latest price
+	pResponse = unirest.get("https://stockviz.p.mashape.com/marketdata/indexlist", 
+		headers={
+			"X-Mashape-Authorization": mashape_auth,
+			"Accept": "application/json"
+		}
+	);
+	
+	if pResponse.code == 200:
+		return pResponse.body
+
+# function to place a trade in your StockViz account
 def getLivePrice(symbol):
 	#get the latest price
 	pResponse = unirest.get("https://stockviz.p.mashape.com/marketdata/livePriceEquity", 
@@ -65,29 +78,28 @@ def getTechnicals(symbol, start=datetime.date.today()-datetime.timedelta(days=10
 		return []
 
 # function to get index constituents
-def getConstituents(indexName):
-	iResponse = unirest.get("https://stockviz.p.mashape.com/marketdata/indexlist", 
+def getConstituentsByName(indexName):
+	indices = getIndices()
+	
+	i = (item for item in indices if item["INDEX_NAME"] == indexName).next()
+	indexId = i["INDEX_ID"]
+	constituents = getConstituentsByIndexId(indexId)
+	return constituents
+		
+def getConstituentsByIndexId(id):
+	cResponse = unirest.get("https://stockviz.p.mashape.com/marketdata/symbolsOfIndex", 
+		params={
+			"id": id
+		},
 		headers={
 			"X-Mashape-Authorization": mashape_auth,
 			"Accept": "application/json"
 		}
 	);
-	
-	if iResponse.code == 200:
-		i = (item for item in iResponse.body if item["INDEX_NAME"] == indexName).next()
-		indexId = i["INDEX_ID"]
-		cResponse = unirest.get("https://stockviz.p.mashape.com/marketdata/symbolsOfIndex", 
-			params={
-				"id": indexId
-			},
-			headers={
-				"X-Mashape-Authorization": mashape_auth,
-				"Accept": "application/json"
-			}
-		);
-		
-		if cResponse.code == 200:
-			return cResponse.body
+
+	if cResponse.code == 200:
+		return cResponse.body
+
 			
 # function to remove stocks from a dictionary (with key "SYMBOL") that has had a bonus/split/dividend
 def removeActions(stocks, lookback):
