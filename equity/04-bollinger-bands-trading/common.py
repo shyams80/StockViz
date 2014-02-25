@@ -2,7 +2,7 @@ import unirest
 import datetime
 import urllib
 
-mashape_auth = "XviW7bKITJzTkMB6x1DUTzGOh0Kzi72O"
+mashape_auth = "YOUR_MASHAPE_API_KEY"
 unirest.timeout(10)
 
 # function to place a trade in your StockViz account
